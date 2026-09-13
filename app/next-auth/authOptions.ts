@@ -1,8 +1,9 @@
-import { AuthOptions } from "next-auth";
+import { NextAuthOptions, Session, User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { jwtDecode } from "jwt-decode";
+import { JWT } from "next-auth/jwt";
 
-export const authOption: AuthOptions = {
+export const authOption: NextAuthOptions = {
   // Configure one or more authentication providers
   providers: [
     Credentials({
@@ -21,7 +22,7 @@ export const authOption: AuthOptions = {
       },
       async authorize(credentials) {
         const response = await fetch(
-          "https://ecommerce.routemisr.com/api/v1/auth/signin",
+          `${process.env.BASE_API}/api/v1/auth/signin`,
           {
             method: "POST",
             headers: {
@@ -50,10 +51,29 @@ export const authOption: AuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      console.log("JWT callback - token:", token);
+      console.log("JWT callback - user:", user);
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.token = user.token;
+      }
+      return token;
+    },
+  async session({ session, token }) {
+    if (token) {
+      session.user.id = token.id as string;
+      session.user.email = token.email as string;
+      session.user.name = token.name as string;
+      session.user.token = token.token as string;
+    }
+    return session;
+  },
+  },
   pages: {
     signIn: "/login",
-  },
-  session: {
-    strategy: "jwt",
   },
 };

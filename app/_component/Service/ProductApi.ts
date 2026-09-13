@@ -1,6 +1,6 @@
 import { prodType } from "@/app/_interface/product"
 
-const PRODUCTS_URL = "https://ecommerce.routemisr.com/api/v1/products"
+const PRODUCTS_URL = `${process.env.BASE_API}/api/v1/products`
 
 type ProductsResponse = {
   data: prodType[]

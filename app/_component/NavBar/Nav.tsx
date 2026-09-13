@@ -15,9 +15,12 @@ import {
   UserIcon,
   UserPlusIcon,
   XMarkIcon,
+  IdentificationIcon,
 } from "@heroicons/react/24/outline"
 import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react"
 import Link from "next/link"
+import Image from "next/image"
+import { signOut, useSession } from "next-auth/react"
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -35,8 +38,13 @@ const categories = [
 ]
 
 export default function Nav() {
+  const session = useSession();
+  console.log( 'session is  :',session)
   const [open, setOpen] = useState(false)
   const [categoriesOpen, setCategoriesOpen] = useState(false)
+  function Logouthandler(){
+    signOut({ callbackUrl: "/LogIn" ,redirect: true });
+  }
 
   return (
     <div className="bg-white text-slate-700">
@@ -49,17 +57,17 @@ export default function Nav() {
           <div className="hidden items-center gap-4 lg:flex">
             <span className="flex items-center gap-1"><PhoneIcon className="size-4" />+1 (800) 123-4567</span>
             <span className="flex items-center gap-1"><EnvelopeIcon className="size-4" />support@freshcart.com</span>
-            <Link href="/LogIn" className="flex items-center gap-1 border-l border-slate-200 pl-4 hover:text-emerald-600"><UserIcon className="size-4" />Sign In</Link>
-            <Link href="/SignUp" className="flex items-center gap-1 hover:text-emerald-600"><UserPlusIcon className="size-4" />Sign Up</Link>
+           {session.status==="authenticated" ? <> </>: <> <Link href="/LogIn" className="flex items-center gap-1 border-l border-slate-200 pl-4 hover:text-emerald-600"><UserIcon className="size-4" />Sign In</Link>
+            <Link href="/SignUp" className="flex items-center gap-1 hover:text-emerald-600"><UserPlusIcon className="size-4" />Sign Up</Link></> }
           </div>
         </div>
       </div>
 
-      <header className="border-b border-slate-100">
+      <header className="border-b border-slate-100 sticky top-0 z-40 bg-white">
         <nav aria-label="Main navigation" className="mx-auto  px-4 sm:px-6 lg:px-8">
           <div className="flex min-h-20 items-center gap-4">
             <button type="button" onClick={() => setOpen(true)} className="rounded-md p-2 text-slate-500 lg:hidden" aria-label="Open menu"><Bars3Icon className="size-6" /></button>
-            <Link href="/" className="flex shrink-0 items-center gap-2"><ShoppingCartIcon className="size-8 text-emerald-600" /><span className="text-2xl font-bold tracking-tight text-slate-800">FreshCart</span></Link>
+            <Image src="/images/freshcart-logo.png" alt="FreshCart Logo" width={300} height={100} className="h-10 w-auto" />
 
             <div className="hidden flex-1 lg:block">
               <div className="mx-auto flex max-w-xl items-center rounded-full border border-slate-200 bg-slate-50 px-5 py-2">
@@ -103,9 +111,14 @@ export default function Nav() {
 
             <div className="ml-auto flex items-center gap-4">
               <div className="hidden items-center gap-2 text-xs lg:flex"><span className="flex size-10 items-center justify-center rounded-full bg-emerald-50"><ChatBubbleLeftRightIcon className="size-5 text-emerald-600" /></span><span><span className="block text-slate-400">Support</span><strong>24/7 Help</strong></span></div>
-              <Link href="/wishlist" aria-label="Wishlist"><HeartIcon className="size-6 text-slate-500 hover:text-emerald-600" /></Link>
+
+              {session.status==="authenticated" ? <> <Link href="/wishlist" aria-label="Wishlist"><HeartIcon className="size-6 text-slate-500 hover:text-emerald-600" /></Link>
               <Link href="/cart" className="relative" aria-label="Shopping cart"><ShoppingCartIcon className="size-6 text-slate-500 hover:text-emerald-600" /><span className="absolute -right-2 -top-2 flex size-4 items-center justify-center rounded-full bg-emerald-600 text-[10px] text-white">0</span></Link>
-              <Link href="/LogIn" className="hidden items-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 sm:flex"><UserIcon className="size-4" />Sign In</Link>
+              <Link href="/profile" className="relative" aria-label="Shopping cart"><IdentificationIcon className="size-8 text-slate-500 hover:text-emerald-600" /></Link>
+                 <button onclick={Logouthandler}  className="hidden items-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white hover:bg-red-700 sm:flex">Log Out</button> </>:<> <Link href="/LogIn" className="hidden items-center gap-2 rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700 sm:flex"><UserIcon className="size-4" />Sign In</Link></> }
+              
+              
+             
             </div>
           </div>
 

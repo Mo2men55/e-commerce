@@ -3,6 +3,8 @@ import { Exo } from "next/font/google";
 import "./globals.css";
 import Nav from "./_component/NavBar/Nav";
 import Footer from "./_component/Footer/Footer";
+import MyProvider from "./_component/MyProvider/MyProvider";
+
 
 const Exofont = Exo({
   variable: "--font-Exo",
@@ -21,9 +23,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${Exofont.className}  h-full antialiased`}
     >
       <body className="min-h-full flex flex-col ">
+        <MyProvider>
         <Nav />
         {children}
         <Footer/>
+        </MyProvider>
         </body>
     </html>
   );

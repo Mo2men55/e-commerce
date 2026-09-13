@@ -11,7 +11,7 @@ type SignUpPayload = {
 export async function signUpUser(values: SignUpPayload) {
   try {
     const response = await fetch(
-      "https://ecommerce.routemisr.com/api/v1/auth/signup",
+      `${process.env.BASE_API}/api/v1/auth/signup`,
       {
         method: "POST",
         headers: {
